@@ -95,15 +95,15 @@ void loop() {
     // Blar en side frem hvis knappteller = 1
     if (knappTeller == 1) {
       etSteg("+");
-      //halvSteg("+");
-      //halvSteg("-");
+      halvSteg("+");
+      halvSteg("-");
     }
 
     // Blar en side tilbake hvis knappteller = 2
     else if (knappTeller == 2) {
       etSteg("-");
-      //halvSteg("-");
-      //halvSteg("+");
+      halvSteg("-");
+      halvSteg("+");
     }
 
     //nullstiller
