@@ -2,10 +2,8 @@
 const int stepsPerRevolution = 64;  // number of steps per revolution, brukes med trinnmotoren og driverkort
 Stepper myStepper(stepsPerRevolution, 8, 10, 9, 11); //brukes for driverkort
 
-// Hva det er og hvilken pin den bruker, bruker dette for å teste
-int LED4 = 4;
-int knapp3 = 3;
-int knapp2 = 2;
+// Hva det er og hvilken pin den bruker. (pedal er knapp)
+int pedalKnapp = 3;
 
 // ettSteg er hvor mange steps*64 som trengs for å flytte kammen fra tann til tann
 // halvtSteg er da 11*64 steps for å flytte en halv tann på kammen
@@ -59,13 +57,24 @@ void halvSteg (String retning) {
 }
 
 
+// blar et ark. retning velger rotasjons retning
+void blaArk(String retning) {
+  if (retning == "+") {
+    etSteg("+");
+    halvSteg("+");
+    halvSteg("-");;
+  }
+  else if (retning == "-") {
+    etSteg("-");
+    halvSteg("-");
+    halvSteg("+");
+  }
+}
+
 
 
 void setup() {
-  pinMode(LED4, OUTPUT);
-  pinMode(knapp3,INPUT_PULLUP);
-  pinMode(knapp2,INPUT_PULLUP);
-
+  pinMode(pedalKnapp,INPUT_PULLUP);
 
   myStepper.setSpeed(400); // hastighet på motoren
   Serial.begin(9600);
@@ -75,10 +84,13 @@ void setup() {
 
 void loop() {
 
-  // når knappen blir trykket inn så vil den "+=" for mange ganger i sekundet
-  if (digitalRead(knapp3) == LOW) {
+  //knappen summer holdeInneTeller når den er trykket inn
+  if (digitalRead(pedalKnapp) == LOW) {
     holdeInneTeller += 1;
   }
+
+  // når knappen blir trykket inn så vil den "+=" for mange ganger i sekundet
+  // så trenger en til teller som heter knappTeller som konverterer fra holdeInneTeller
 
   // når knappen blir sluppet, vil denne telle antall trykk
   // den vil også sette variablene slik at millis() if-setningen under vil fungere
@@ -89,21 +101,17 @@ void loop() {
   }
 
   // period velger hvor lenge etter knappe-/pedaltrykk den skal vente på å kjøre koden under
-  // valgte å lage dette fordi da er et trykk en side frem, og dobbel trykk to sider tilbake 
+  // valgte å lage dette fordi da er et trykk en side frem, og dobbel trykk en side tilbake 
   if (knappTeller > 0 && millis() - time_now > period) {
     
     // Blar en side frem hvis knappteller = 1
     if (knappTeller == 1) {
-      etSteg("+");
-      halvSteg("+");
-      halvSteg("-");
+      blaArk("+");
     }
 
     // Blar en side tilbake hvis knappteller = 2
     else if (knappTeller == 2) {
-      etSteg("-");
-      halvSteg("-");
-      halvSteg("+");
+      blaArk("-");
     }
 
     //nullstiller
