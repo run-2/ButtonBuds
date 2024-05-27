@@ -100,6 +100,9 @@ void loop() {
     time_now = millis();
   }
 
+  // får et schrodinger fenomen. trenger denne for at den skal kunne rotere andre veien.
+  Serial.println(knappTeller);
+  
   // period velger hvor lenge etter knappe-/pedaltrykk den skal vente på å kjøre koden under
   // valgte å lage dette fordi da er et trykk en side frem, og dobbel trykk en side tilbake 
   if (knappTeller > 0 && millis() - time_now > period) {
